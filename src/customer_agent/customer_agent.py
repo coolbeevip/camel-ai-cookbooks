@@ -18,6 +18,8 @@ from dotenv import load_dotenv
 from py_trees.blackboard import Blackboard
 from pydantic import BaseModel, Field
 
+from src.base.py_trees_util import safe_get_blackboard, safe_set_blackboard
+
 load_dotenv("../../.env")  # isort:skip
 
 # 配置日志
@@ -223,8 +225,8 @@ class AnalyzeIntentNode(py_trees.behaviour.Behaviour):
                 key="current_message", access=py_trees.common.Access.READ
             )
 
-            message = blackboard.get("current_message")
-            context = blackboard.get("customer_context")
+            message = safe_get_blackboard(blackboard, "current_message")
+            context = safe_get_blackboard(blackboard, "customer_context")
 
             if not message or not context:
                 return py_trees.common.Status.FAILURE
@@ -244,8 +246,8 @@ class AnalyzeIntentNode(py_trees.behaviour.Behaviour):
             blackboard.register_key(
                 key="customer_context", access=py_trees.common.Access.WRITE
             )
-            blackboard.set("intent_data", intent_data)
-            blackboard.set("customer_context", context)
+            safe_set_blackboard(blackboard, "intent_data", intent_data)
+            safe_set_blackboard(blackboard, "customer_context", context)
 
             logger.info(
                 f"Intent analyzed: {intent_data['intent']} (confidence: {intent_data['confidence']})"
@@ -278,8 +280,8 @@ class CheckEscalationNode(py_trees.behaviour.Behaviour):
             ):
                 return py_trees.common.Status.FAILURE
 
-            context = blackboard.get("customer_context")
-            intent_data = blackboard.get("intent_data")
+            context = safe_get_blackboard(blackboard, "customer_context")
+            intent_data = safe_get_blackboard(blackboard, "intent_data")
 
             # 升级条件检查
             escalation_needed = (
@@ -294,7 +296,7 @@ class CheckEscalationNode(py_trees.behaviour.Behaviour):
             blackboard.register_key(
                 key="escalation_needed", access=py_trees.common.Access.WRITE
             )
-            blackboard.set("escalation_needed", escalation_needed)
+            safe_set_blackboard(blackboard, "escalation_needed", escalation_needed)
 
             if escalation_needed:
                 logger.info("Escalation needed")
@@ -328,9 +330,9 @@ class GenerateResponseNode(py_trees.behaviour.Behaviour):
                 key="intent_data", access=py_trees.common.Access.READ
             )
 
-            message = blackboard.get("current_message")
-            context = blackboard.get("customer_context")
-            intent_data = blackboard.get("intent_data")
+            message = safe_get_blackboard(blackboard, "current_message")
+            context = safe_get_blackboard(blackboard, "customer_context")
+            intent_data = safe_get_blackboard(blackboard, "intent_data")
 
             if not all([message, context, intent_data]):
                 return py_trees.common.Status.FAILURE
@@ -351,8 +353,8 @@ class GenerateResponseNode(py_trees.behaviour.Behaviour):
             blackboard.register_key(
                 key="customer_context", access=py_trees.common.Access.WRITE
             )
-            blackboard.set("response_data", response_data)
-            blackboard.set("customer_context", context)
+            safe_set_blackboard(blackboard, "response_data", response_data)
+            safe_set_blackboard(blackboard, "customer_context", context)
 
             logger.info(f"Response generated: {response_data.message[:50]}...")
             return py_trees.common.Status.SUCCESS
@@ -375,7 +377,7 @@ class EscalateToHumanNode(py_trees.behaviour.Behaviour):
                 key="customer_context", access=py_trees.common.Access.READ
             )
 
-            context = blackboard.get("customer_context")
+            context = safe_get_blackboard(blackboard, "customer_context")
             if not context:
                 return py_trees.common.Status.FAILURE
 
@@ -405,8 +407,8 @@ class EscalateToHumanNode(py_trees.behaviour.Behaviour):
             blackboard.register_key(
                 key="customer_context", access=py_trees.common.Access.WRITE
             )
-            blackboard.set("response_data", response_data)
-            blackboard.set("customer_context", context)
+            safe_set_blackboard(blackboard, "response_data", response_data)
+            safe_set_blackboard(blackboard, "customer_context", context)
 
             logger.info("Escalated to human agent")
             return py_trees.common.Status.SUCCESS
@@ -435,9 +437,9 @@ class LogInteractionNode(py_trees.behaviour.Behaviour):
                 key="response_data", access=py_trees.common.Access.READ
             )
 
-            context = blackboard.get("customer_context")
-            intent_data = blackboard.get("intent_data")
-            response_data = blackboard.get("response_data")
+            context = safe_get_blackboard(blackboard, "customer_context")
+            intent_data = safe_get_blackboard(blackboard, "intent_data")
+            response_data = safe_get_blackboard(blackboard, "response_data")
 
             if not all([context, intent_data, response_data]):
                 return py_trees.common.Status.FAILURE
@@ -518,8 +520,8 @@ class CustomerServiceSystem:
         )
 
         # 设置黑板数据
-        blackboard.set("current_message", message)
-        blackboard.set("customer_context", context)
+        safe_set_blackboard(blackboard, "current_message", message)
+        safe_set_blackboard(blackboard, "customer_context", context)
 
         # 执行行为树
         self.behavior_tree.tick()
@@ -529,8 +531,8 @@ class CustomerServiceSystem:
         blackboard.register_key(
             key="customer_context", access=py_trees.common.Access.READ
         )
-        response_data = blackboard.get("response_data")
-        updated_context = blackboard.get("customer_context")
+        response_data = safe_get_blackboard(blackboard, "response_data")
+        updated_context = safe_get_blackboard(blackboard, "customer_context")
 
         if response_data and updated_context:
             # 更新传入的上下文对象
@@ -666,12 +668,11 @@ def main():
             st.write(f"状态: {tree_status}")
 
             # 显示行为树结构
-            with st.expander("查看行为树结构"):
-                st.image(
-                    os.path.join(current_dir,"customer_agent.png"),
-                    caption="行为树结构",
-                    use_container_width=True,
-                )
+            st.image(
+                os.path.join(current_dir,"customer_agent.png"),
+                caption="行为树结构",
+                use_container_width=True,
+            )
 
         # 最新分析结果
         st.subheader("📈 最新分析")
