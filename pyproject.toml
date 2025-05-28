@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "camel-ai-cookbooks"
+version = "0.1.0"
+description = ""
+authors = [{ name = "Lei Zhang" }]
+requires-python = ">=3.10,<3.13"
+readme = "README.md"
+license = "Apache-2.0"
+dependencies = [
+    "python-dotenv>=1.0",
+    "tabulate>=0.9",
+    "camel-ai[all]>=0.2.60",
+    "py-trees==2.3.0",
+    "streamlit==1.45.1"
+]
+
+
+[tool.hatch.build.targets.sdist]
+include = ["src"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src"]
