@@ -162,7 +162,3 @@ cython_debug/
 
 # https://app.composio.dev/
 .composio.lock
-
-*.dot
-*.png
-*.svg

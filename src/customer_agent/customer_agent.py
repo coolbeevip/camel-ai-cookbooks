@@ -24,6 +24,7 @@ load_dotenv("../../.env")  # isort:skip
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 数据模型
 class Priority(Enum):
@@ -469,13 +470,13 @@ class CustomerServiceSystem:
     def __init__(self, openai_api_key: str, openai_api_url: Optional[str] = None):
         self.ai_service = AIService(openai_api_key, openai_api_url)
         self.behavior_tree = self._build_behavior_tree()
-        py_trees.display.render_dot_tree(self.behavior_tree.root)
+        py_trees.display.render_dot_tree(self.behavior_tree.root, target_directory=current_dir, name="customer_agent")
 
     def _build_behavior_tree(self) -> py_trees.trees.BehaviourTree:
         """构建行为树"""
 
         # 根节点 - 选择器
-        root = py_trees.composites.Selector(name="CustomerServiceRoot", memory=False)
+        root = py_trees.composites.Selector(name="customer_agent", memory=False)
 
         # 升级分支 - 序列
         escalation_branch = py_trees.composites.Sequence(
@@ -667,7 +668,7 @@ def main():
             # 显示行为树结构
             with st.expander("查看行为树结构"):
                 st.image(
-                    "customerserviceroot.png",
+                    os.path.join(current_dir,"customer_agent.png"),
                     caption="行为树结构",
                     use_container_width=True,
                 )
