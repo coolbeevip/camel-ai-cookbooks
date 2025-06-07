@@ -2,6 +2,7 @@ from camel.configs import ChatGPTConfig
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from dotenv import load_dotenv
+from camel.agents import ChatAgent
 
 load_dotenv("../../.env")  # isort:skip
 
@@ -13,8 +14,6 @@ model = ModelFactory.create(
     model_type=ModelType.GPT_4O_MINI,
     model_config_dict=ChatGPTConfig().as_dict(),  # [Optional] the config for model
 )
-
-from camel.agents import ChatAgent
 
 agent = ChatAgent(
     system_message=sys_msg,

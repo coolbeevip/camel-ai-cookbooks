@@ -683,6 +683,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "camel-ai", extra = ["all"] },
+    { name = "colorama" },
     { name = "py-trees" },
     { name = "python-dotenv" },
     { name = "streamlit" },
@@ -692,6 +693,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "camel-ai", extras = ["all"], specifier = ">=0.2.60" },
+    { name = "colorama", specifier = ">=0.4" },
     { name = "py-trees", specifier = "==2.3.0" },
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "streamlit", specifier = "==1.45.1" },

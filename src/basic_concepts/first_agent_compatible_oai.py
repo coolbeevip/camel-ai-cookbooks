@@ -4,6 +4,7 @@ from camel.configs import ChatGPTConfig
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType
 from dotenv import load_dotenv
+from camel.agents import ChatAgent
 
 load_dotenv("../../.env")  # isort:skip
 
@@ -17,8 +18,6 @@ model = ModelFactory.create(
     url=os.environ.get("DASHSCOPE_API_BASE_URL"),
     api_key=os.environ.get("DASHSCOPE_API_KEY"),
 )
-
-from camel.agents import ChatAgent
 
 agent = ChatAgent(
     system_message=sys_msg,

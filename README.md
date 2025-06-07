@@ -11,7 +11,7 @@ source .venv/bin/activate
 uv sync --all-extras
 ```
 
-## [智能客服](src/customer_agent/README.md)
+## [智能客服](src/agents/customer_agent/README.md)
 
 - AI理解用户意图生成回复
 - 行为树管理对话流程和升级机制

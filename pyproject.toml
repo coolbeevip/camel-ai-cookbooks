@@ -15,7 +15,8 @@ dependencies = [
     "tabulate>=0.9",
     "camel-ai[all]>=0.2.60",
     "py-trees==2.3.0",
-    "streamlit==1.45.1"
+    "streamlit==1.45.1",
+    "colorama>=0.4"
 ]
 
 

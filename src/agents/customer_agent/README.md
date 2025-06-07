@@ -6,6 +6,6 @@
 - 行为树管理对话流程和升级机制
 
 ```shell
-streamlit run src/customer_agent/customer_agent.py
+streamlit run src/agents/customer_agent/customer_ui.py
 ```
 

@@ -38,7 +38,8 @@ def sub(a: int, b: int) -> int:
 
 MATH_FUNCS: list[FunctionTool] = [FunctionTool(func) for func in [add, sub]]
 
-tools_list = [*SearchToolkit().get_tools(), *MATH_FUNCS]
+search_tools = SearchToolkit().get_tools()
+tools_list = search_tools + MATH_FUNCS
 
 # 定义一个支持工具的模型
 model = ModelFactory.create(

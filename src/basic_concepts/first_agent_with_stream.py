@@ -2,6 +2,7 @@ from camel.configs import ChatGPTConfig
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from dotenv import load_dotenv
+from camel.agents import ChatAgent
 
 load_dotenv("../../.env")  # isort:skip
 
@@ -15,8 +16,6 @@ model = ModelFactory.create(
         stream=True
     ).as_dict(),  # [Optional] the config for model
 )
-
-from camel.agents import ChatAgent
 
 agent = ChatAgent(
     system_message=sys_msg,
